@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "build": "rimraf dist && cpx \"src/**/*\" dist",
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +20,8 @@
     "mongoose": "^9.11.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "cpx": "^1.5.0",
+    "nodemon": "^3.1.14",
+    "rimraf": "^6.1.3"
   }
 }
