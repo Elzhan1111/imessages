@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import cron from "node-cron";
 
 import "dotenv/config";
 import fs from "fs";
@@ -37,5 +38,19 @@ app.listen(PORT, () => {
     connectDB();
     console.log("Server is up and running on PORT:", PORT);
     
-    // ИСПРАВЛЕНО: Строка с неопределенным job полностью удалена
+    // 1. Сначала ОБЯЗАТЕЛЬНО создаем саму задачу (например, пинг каждые 14 минут)
+    const job = cron.schedule("*/14 * * * *", () => {
+        console.log("Пингуем сервер для предотвращения засыпания...");
+    });
+
+    // 2. Теперь эта строка из урока будет работать идеально и не вызовет ошибку!
+    if(process.env.NODE_ENV === "production") job.start();
 });
+
+
+// app.listen(PORT, () => {
+//     connectDB();
+//     console.log("Server is up and running on PORT:", PORT);
+    
+//     // ИСПРАВЛЕНО: Строка с неопределенным job полностью удалена
+// });
