@@ -34,18 +34,20 @@ if (fs.existsSync(publicDir)) {
     });
 }
 
-app.listen(PORT, () => {
+// Было: app.listen(PORT, () => {
+// Стало:
+app.listen(PORT, "0.0.0.0", () => {
     connectDB();
     console.log("Server is up and running on PORT:", PORT);
     
-    // 1. Сначала ОБЯЗАТЕЛЬНО создаем саму задачу (например, пинг каждые 14 минут)
     const job = cron.schedule("*/14 * * * *", () => {
         console.log("Пингуем сервер для предотвращения засыпания...");
     });
 
-    // 2. Теперь эта строка из урока будет работать идеально и не вызовет ошибку!
     if(process.env.NODE_ENV === "production") job.start();
 });
+
+
 
 
 // app.listen(PORT, () => {

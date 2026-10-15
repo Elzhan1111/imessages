@@ -38,7 +38,7 @@
     
     EXPOSE 10000
     USER node
-    
+    git commit -m "fix: move node-cron to backend and clean root dependencies" 
     # Запускаем собранный файл из папки dist
     CMD ["node", "dist/index.js"]
     
