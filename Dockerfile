@@ -24,19 +24,22 @@ COPY backend/ ./
 RUN npm run build
 
 # --- Stage 3: runtime image (only prod deps + built assets) ---
-# Express serves API routes and static files from public/.
-FROM node:22-bookworm-slim AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-ENV PORT=3001
+    FROM node:22-bookworm-slim AS runner
+    WORKDIR /app
+    ENV NODE_ENV=production
+    # Меняем порт на 10000 (стандартный для Render)
+    ENV PORT=10000
+    
+    COPY backend/package.json backend/package-lock.json ./
+    RUN npm install --omit=dev --no-audit --no-fund && npm cache clean --force
+    
+    COPY --from=backend-build /app/dist ./dist
+    COPY --from=frontend-build /app/frontend/dist ./public
+    
+    # Открываем порт 10000 наружу
+    EXPOSE 10000
+    USER node
+    
+    CMD ["node", "dist/index.js"]
+    
 
-COPY backend/package.json backend/package-lock.json ./
-RUN npm install --omit=dev --no-audit --no-fund && npm cache clean --force
-
-COPY --from=backend-build /app/dist ./dist
-COPY --from=frontend-build /app/frontend/dist ./public
-
-EXPOSE 3001
-USER node
-
-CMD ["node", "dist/index.js"]
